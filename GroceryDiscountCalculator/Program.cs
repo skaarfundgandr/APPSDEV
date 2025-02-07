@@ -1,6 +1,7 @@
 // See https://aka.ms/new-console-template for more information
-using System;    
+using System;
 using System.Collections;
+using System.Text.RegularExpressions;
 
 namespace GroceryDiscountCalculator
 {
@@ -46,12 +47,22 @@ namespace GroceryDiscountCalculator
 
                 input = Console.ReadLine();
 
-                res = input.Length > 1 ? '\0': input[0];
-                switch (res) {
-                
+                res = input.Length > 1 ? '\0' : input[0];
+                switch (res)
+                {
+
                     case '1':
                         Console.Write("Enter product name: ");
                         string pname = Console.ReadLine();
+                        if (IsValidString(pname))
+                        {
+                            return;
+                        } 
+                        else if (!IsValidString(pname))
+                        {
+                            Console.WriteLine("Invalid product name. Please enter a valid product name.");
+                            break;
+                        } 
 
                         Console.Write("Enter price: ");
                         double price = double.Parse(Console.ReadLine());
@@ -89,6 +100,7 @@ namespace GroceryDiscountCalculator
                         {
                             Console.WriteLine("{0,-15} {1,-10} {2,-10}", item.ProductName, item.Price, item.Quantity);
                         }
+                        Console.WriteLine(new string('-', 40));
                         break;
                     case '3':
                         totalPrice = 0;
@@ -119,5 +131,11 @@ namespace GroceryDiscountCalculator
                 }
             } while (res != 'x');
         }
+
+        static bool IsValidString(string str)
+        {
+            return Regex.IsMatch(str, @"^[A-Za-z\s]+$"); // Allows letters and spaces only
+        }
     }
+
 }
