@@ -1,4 +1,3 @@
-// See https://aka.ms/new-console-template for more information
 using System;
 using System.Collections;
 using System.Text.RegularExpressions;
@@ -29,112 +28,128 @@ namespace GroceryDiscountCalculator
         {
             const double BASE_DISCOUNT = 0.1;
             string input;
-            char res = '\0';
+            char choice;
             double totalPrice;
 
             ArrayList items = new ArrayList();
             Console.Clear();
-            do
+
+            try 
             {
-                Console.WriteLine("+-------------------------------+");
-                Console.WriteLine("Grocery Store Discount Calculator");
-                Console.WriteLine("+-------------------------------+");
-                Console.WriteLine("[1] | Add a product");
-                Console.WriteLine("[2] | Show products");
-                Console.WriteLine("[3] | Calculate total price");
-                Console.WriteLine("[x] | Exit");
-                Console.Write("Enter your choice: ");
-
-                input = Console.ReadLine();
-
-                res = input.Length > 1 ? '\0' : input[0];
-                switch (res)
+                do
                 {
+                    Console.Clear();
+                    Console.WriteLine("\n+-------------------------------+");
+                    Console.WriteLine("Grocery Store Discount Calculator");
+                    Console.WriteLine("+-------------------------------+");
+                    Console.WriteLine("[1] | Add a product");
+                    Console.WriteLine("[2] | Show products");
+                    Console.WriteLine("[3] | Calculate total price");
+                    Console.WriteLine("[x] | Exit");
+                    Console.Write("Enter your choice: ");
 
-                    case '1':
-                        Console.Write("Enter product name: ");
-                        string pname = Console.ReadLine();
-                        if (IsValidString(pname))
-                        {
-                            return;
-                        } 
-                        else if (!IsValidString(pname))
-                        {
-                            Console.WriteLine("Invalid product name. Please enter a valid product name.");
-                            break;
-                        } 
+                    input = Console.ReadLine();
 
-                        Console.Write("Enter price: ");
-                        double price = double.Parse(Console.ReadLine());
+                    choice = '\0';
 
-                        Console.Write("Enter quantity: ");
-                        int qtty = int.Parse(Console.ReadLine());
+                    if (input.Length > 0)
+                    {
+                        choice = input.Length > 1 ? '\0' : input[0];
+                    }
+                    switch (choice)
+                    {
 
-                        if (items.Count > 0)
-                        {
-                            Boolean itemfound = false;
-
-                            foreach (Item item in items)
+                        case '1':
+                            Console.Write("Enter product name: ");
+                            string pname = Console.ReadLine();
+                            if (!IsValidString(pname))
                             {
-                                if (item.ProductName == pname)
+                                Console.WriteLine("Invalid product name. Please enter a valid product name.");
+                                return;
+                            }
+
+                            Console.Write("Enter price: ");
+                            double price = double.Parse(Console.ReadLine());
+
+                            Console.Write("Enter quantity: ");
+                            int qtty = int.Parse(Console.ReadLine());
+
+                            if (items.Count > 0)
+                            {
+                                Boolean itemfound = false;
+
+                                foreach (Item item in items)
                                 {
-                                    item.Quantity += qtty;
-                                    itemfound = true;
-                                    break;
+                                    if (item.ProductName == pname)
+                                    {
+                                        item.Quantity += qtty;
+                                        itemfound = true;
+                                        break;
+                                    }
+                                }
+                                if (!itemfound)
+                                {
+                                    items.Add(new Item(pname, price, qtty));
                                 }
                             }
-                            if (!itemfound)
+                            else
                             {
                                 items.Add(new Item(pname, price, qtty));
                             }
-                        }
-                        else
-                        {
-                            items.Add(new Item(pname, price, qtty));
-                        }
-                        break;
-                    case '2':
-                        Console.WriteLine("{0,-15} {1,-10} {2,-10}", "Product Name", "Price", "Quantity");
-                        Console.WriteLine(new string('-', 40));
-                        foreach (Item item in items)
-                        {
-                            Console.WriteLine("{0,-15} {1,-10} {2,-10}", item.ProductName, item.Price, item.Quantity);
-                        }
-                        Console.WriteLine(new string('-', 40));
-                        break;
-                    case '3':
-                        totalPrice = 0;
+                            break;
+                        case '2':
+                            Console.WriteLine("\n{0,-15} {1,-10} {2,-10}", "Product Name", "Price", "Quantity");
+                            Console.WriteLine(new string('-', 40));
+                            foreach (Item item in items)
+                            {
+                                Console.WriteLine("{0,-15} {1,-10} {2,-10}", item.ProductName, item.Price, item.Quantity);
+                            }
+                            Console.WriteLine(new string('-', 40));
+                            break;
+                        case '3':
+                            totalPrice = 0;
 
-                        foreach (Item item in items)
-                        {
-                            totalPrice += item.Price * item.Quantity;
-                        }
+                            foreach (Item item in items)
+                            {
+                                totalPrice += item.Price * item.Quantity;
+                            }
 
-                        if (totalPrice > 100 && totalPrice <= 200)
-                        {
-                            totalPrice -= totalPrice * BASE_DISCOUNT;
-                        }
-                        if (totalPrice > 200 && totalPrice <= 500)
-                        {
-                            totalPrice -= totalPrice * (BASE_DISCOUNT + 0.5);
-                        }
-                        if (totalPrice > 500)
-                        {
-                            totalPrice -= totalPrice * (BASE_DISCOUNT + 0.1);
-                        }
+                            Console.WriteLine();
 
-                        Console.WriteLine($"Total Price: ${totalPrice}");
-                        break;
-                    default:
-                        Console.WriteLine("Invalid choice.");
-                        break;
-                }
-            } while (res != 'x');
+                            if (totalPrice > 100 && totalPrice <= 200)
+                            {
+                                totalPrice -= totalPrice * BASE_DISCOUNT;
+                                Console.WriteLine("Applied 10% discount");
+                            }
+                            if (totalPrice > 200 && totalPrice <= 500)
+                            {
+                                totalPrice -= totalPrice * (BASE_DISCOUNT + 0.05);
+                                Console.WriteLine("Applied 15% discount");
+                            }
+                            if (totalPrice > 500)
+                            {
+                                totalPrice -= totalPrice * (BASE_DISCOUNT + 0.1);
+                                Console.WriteLine("Applied 20% discount");
+                            }
+
+                            Console.WriteLine($"Total Price: ${totalPrice}");
+                            break;
+                        case 'x':
+                            Console.WriteLine("Thank you for using our program");
+                            break;
+                        default:
+                            Console.WriteLine("Invalid choice.");
+                            break;
+                    }
+                    Console.Write("\nEnter any key to continue...");
+                    Console.ReadKey();
+                } while(choice != 'x');
+            } catch(Exception e) { Console.WriteLine(e.Message); }
         }
 
         static bool IsValidString(string str)
         {
-            return Regex.IsMatch(str, @"^[A-Za-z\s]+$"); // Allows letters and spaces only
+            return Regex.IsMatch(str, @"^[A-Za-z\s]+$");
         }
     }
 
